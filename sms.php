@@ -124,6 +124,18 @@ $context  = stream_context_create($options);
 $result = file_get_contents("http://192.168.1.1:80/cgi-bin/sms_send",false,$context);
 echo $result;
 }
+} else {
+	$data = array('username' => $username_smsgateway,'password' => $passwd_smsgateway,'number' => $number, 'text' => "Błędna treść SMS. Incorrect SMS content.");
+	$options = array(
+		'http' => array(
+		'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+		'method'  => 'POST',
+		'content' => http_build_query($data),
+	    )
+	);
+	$context  = stream_context_create($options);
+	$result = file_get_contents("http://192.168.1.1:80/cgi-bin/sms_send",false,$context);
+	echo $result;
 }
 die();
 ?>
