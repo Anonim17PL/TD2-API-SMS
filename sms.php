@@ -12,6 +12,9 @@ if (strcasecmp($command, "poc ") == 0) {
 	$nrpoc = substr($text, 4);
 }
 if ($nrpoc != null) {
+	$json = file_get_contents("https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable;".$nrpoc.";eu");
+	$ja = json_decode($json,true)["message"];
+	if ($ja["trainInfo"] === null) {
 	$data = array('username' => $username_smsgateway,'password' => $passwd_smsgateway,'number' => $number, 'text' => "Brak pociągu o podanym numerze.\nThere is no train with the given number.");
 	$options = array(
 		'http' => array(
@@ -25,10 +28,6 @@ if ($nrpoc != null) {
 	$result = file_get_contents("http://192.168.1.1:80/cgi-bin/sms_send",false,$context);
 	echo $result;
 }else {
-	$json = file_get_contents("https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable;".$nrpoc.";eu");
-	$ja = json_decode($json,true)["message"];
-	if ($ja["trainInfo"] === null) {
-	
 	$TInfo = $ja["trainInfo"];
 	$RJ = $ja["stopPoints"];
 	$TrainString = $TInfo["trainCategoryCode"].$TInfo["trainNo"];
