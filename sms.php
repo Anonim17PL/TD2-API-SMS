@@ -1,8 +1,9 @@
 <?php
 ini_set('display_errors', 1);
 $strecho;
+$strecho2;
 $nrpoc;
-$username_smsgateway="USERNAME";
+$username_smsgateway="USER";
 $passwd_smsgateway="PASSWD";
 $number = $_GET["telephone"];
 $text = $_GET["text"];
@@ -118,11 +119,18 @@ if ($nrpoc != null) {
 
 	$strecho = "";
 	for ($j = 0; $j < $i+$offset; $j++) {
+	if ($j > 10) {
+		$strecho2 .= $PointName[$j]."\n";
+
+		$strecho2 .= $ArrivalTimeWString[$j]." ";
+		$strecho2 .= $DepartureTimeWString[$j]."\n";
+	} else {
 		$strecho .= $PointName[$j]."\n";
 
 		$strecho .= $ArrivalTimeWString[$j]." ";
 		$strecho .= $DepartureTimeWString[$j]."\n";
-		$strecho .= "\n";
+		//$strecho .= "\n";
+		}
 	}
 $data = array('username' => $username_smsgateway,'password' => $passwd_smsgateway,'number' => $number, 'text' => $strecho);
 $options = array(
@@ -136,6 +144,20 @@ $options = array(
 $context  = stream_context_create($options);
 $result = file_get_contents("http://192.168.1.1:80/cgi-bin/sms_send",false,$context);
 echo $result;
+if ($strecho2 != null){
+	$data = array('username' => $username_smsgateway,'password' => $passwd_smsgateway,'number' => $number, 'text' => $strecho2);
+	$options = array(
+		'http' => array(
+		'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+		'method'  => 'POST',
+		'content' => http_build_query($data),
+	    )
+	);
+	$context  = stream_context_create($options);
+	$result = file_get_contents("http://192.168.1.1:80/cgi-bin/sms_send",false,$context);
+	echo $result;
+}
+
 }
 } else {
 	$data = array('username' => $username_smsgateway,'password' => $passwd_smsgateway,'number' => $number, 'text' => "Błędna treść SMS. Incorrect SMS content.");
