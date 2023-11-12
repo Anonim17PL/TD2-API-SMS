@@ -13,7 +13,7 @@ if (strcasecmp($command, "poc ") == 0) {
 	$nrpoc = substr($text, 4);
 }
 if ($nrpoc != null) {
-	$json = file_get_contents("https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable;".$nrpoc.";eu");
+	$json = file_get_contents("https://api.td2.info.pl/?method=readFromSWDR&value=getTimetable;".$nrpoc.";eu");
 	$ja = json_decode($json,true)["message"];
 	if ($ja["trainInfo"] === null) {
 	$data = array('username' => $username_smsgateway,'password' => $passwd_smsgateway,'number' => $number, 'text' => "Brak pociągu o podanym numerze.\nThere is no train with the given number.");
